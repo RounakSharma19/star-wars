@@ -2,18 +2,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, copy **.env.example** and paste in **.env.local**
-```bash
-NEXT_PUBLIC_API_ENDPOINT="https://swapi.dev/api"
-NEXT_PUBLIC_IMG_URL="https://starwars-visualguide.com/assets/img"
-```
+first install packages used in project with **pnpm**
 
-then install packages used in project with **pnpm**
 ```bash
 pnpm i
 ```
 
 run the development server
+
 ```bash
 pnpm dev
 ```
