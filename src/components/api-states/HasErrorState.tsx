@@ -11,7 +11,7 @@ const HasErrorState = () => {
         Oops! Something went wrong.
       </p>
       <p className="text-md text-slate-500">
-        Don't worry, our team is on it. Please try again later or go back to the
+        Dont worry, our team is on it. Please try again later or go back to the
         homepage.
       </p>
       <Link href="/" className="underline text-amber-400 font-semibold">

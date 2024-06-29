@@ -11,7 +11,7 @@ export const NoResultsFound = () => {
         It looks like your hero is lost in a distant galaxy...
       </p>
       <p className="text-md text-slate-400">
-        Don't worry, you can search for another hero to join your journey.
+        Dont worry, you can search for another hero to join your journey.
       </p>
       <Link href="/" className="underline text-amber-400 font-semibold">
         Search Again
