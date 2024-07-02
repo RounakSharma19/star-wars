@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TCharacter } from "@/types";
 import NextImage from "./NextImage";
 import {
@@ -19,10 +19,20 @@ type TCardCharacterProps = { data: TMappedCharacter };
 
 const CardCharacter = (props: TCardCharacterProps) => {
   const { data } = props;
+
   const [isFavorited, setIsFavorited] = useState(false);
 
+  useEffect(() => {
+    const favoriteStatus = localStorage.getItem(`favorite-${data.id}`);
+    if (favoriteStatus === "true") {
+      setIsFavorited(true);
+    }
+  }, [data.id]);
+
   const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
+    const newFavoriteStatus = !isFavorited;
+    setIsFavorited(newFavoriteStatus);
+    localStorage.setItem(`favorite-${data.id}`, newFavoriteStatus.toString());
   };
 
   return (
