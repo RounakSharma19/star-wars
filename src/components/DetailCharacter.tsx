@@ -33,18 +33,10 @@ const DetailCharacter = async ({ id }: TDetailCharacterProps) => {
       <div className="bg-amber-300 px-2 py-1">
         <h2 className="text-2xl font-[600]">{data.name}</h2>
       </div>
-      <div className="flex gap-3 p-2">
-        <NextImage
-          unoptimized
-          src={`${process.env.NEXT_PUBLIC_IMG_URL}/characters/${id}.jpg`}
-          height={0}
-          width={300}
-          className="object-cover h-full min-w-[300px] rounded"
-        />
-        <div className="flex flex-col min-w-[360px]">
-          <InfoSection title="Personal Data" data={personalData} />
-          <InfoSection title="HomeWorld" data={homeworldInfo} />
-        </div>
+
+      <div className="flex flex-col min-w-[360px] p-2">
+        <InfoSection title="Personal Data" data={personalData} />
+        <InfoSection title="HomeWorld" data={homeworldInfo} />
       </div>
     </div>
   );

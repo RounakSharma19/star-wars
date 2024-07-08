@@ -78,7 +78,7 @@ const ListCharacters = (props: TListCharactersProps) => {
   if (!mappedItems.length) return <NoResultsFound />;
 
   return (
-    <div className="list-characters px-6 pb-6">
+    <div className="flex flex-wrap justify-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {mappedItems?.map((item, index) => (
         <Link
           key={uid + item.name + index}
