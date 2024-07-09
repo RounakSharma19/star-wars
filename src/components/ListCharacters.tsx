@@ -7,6 +7,7 @@ import CardCharacter, { TMappedCharacter } from "./CardCharacter";
 import { useQueryState } from "nuqs";
 import { NoResultsFound } from "./api-states/NoResultsFound";
 import { Spinner } from "./Spinner";
+import FavoriteCharacter from "./FavoriteCharacter";
 
 type TPageData = {
   offset: number;
@@ -33,6 +34,7 @@ const ListCharacters = (props: TListCharactersProps) => {
     page: 1,
   });
   const [internalItems, setInternalItems] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<TMappedCharacter[]>([]);
 
   const hasNextPage = internalItems.length < items.length;
   const filteredItems = useMemo(
@@ -75,35 +77,75 @@ const ListCharacters = (props: TListCharactersProps) => {
     items,
   ]);
 
+  useEffect(() => {
+    const loadFavorites = () => {
+      const favoritedCharacters: TMappedCharacter[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("favorite-")) {
+          const characterData = localStorage.getItem(key);
+          if (characterData) {
+            favoritedCharacters.push(JSON.parse(characterData));
+          }
+        }
+      }
+      setFavorites(favoritedCharacters);
+    };
+
+    loadFavorites();
+  }, []);
+
+  const handleFavoriteToggle = (character: TMappedCharacter) => {
+    setFavorites((prevFavorites) => {
+      const isFavorited = prevFavorites.some((fav) => fav.id === character.id);
+      if (isFavorited) {
+        return prevFavorites.filter((fav) => fav.id !== character.id);
+      } else {
+        return [...prevFavorites, character];
+      }
+    });
+  };
+
   if (!mappedItems.length) return <NoResultsFound />;
 
   return (
-    <div className="flex flex-wrap justify-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {mappedItems?.map((item, index) => (
-        <Link
-          key={uid + item.name + index}
-          href={`/characters/${item.id}`}
-          prefetch
-          scroll={false}
-        >
-          <CardCharacter data={item} />
-        </Link>
-      ))}
+    <div>
+      <div className="sticky top-0 mb-4 p-4 bg-slate-800 rounded z-50">
+        <h2 className="text-xl font-bold mb-2 text-white">
+          Favorited Characters
+        </h2>
+        <FavoriteCharacter />
+      </div>
+      <div className="flex flex-wrap justify-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {mappedItems?.map((item, index) => (
+          <Link
+            key={uid + item.name + index}
+            href={`/characters/${item.id}`}
+            prefetch
+            scroll={false}
+          >
+            <CardCharacter
+              data={item}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
+          </Link>
+        ))}
 
-      {!!searchValue || (
-        <div
-          ref={ref}
-          className="h-auto bg-white-800 border rounded-md flex items-center justify-center"
-        >
-          {hasContentLoading ? (
-            <Spinner />
-          ) : hasNextPage ? (
-            "Load More..."
-          ) : (
-            "You have viewed all items!"
-          )}
-        </div>
-      )}
+        {!!searchValue || (
+          <div
+            ref={ref}
+            className="h-auto bg-white-800 border rounded-md flex items-center justify-center"
+          >
+            {hasContentLoading ? (
+              <Spinner />
+            ) : hasNextPage ? (
+              "Load More..."
+            ) : (
+              "You have viewed all items!"
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

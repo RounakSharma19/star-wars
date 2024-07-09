@@ -17,25 +17,53 @@ export type TMappedCharacter = TCharacter & {
   skin_colors: string | undefined;
 };
 
-type TCardCharacterProps = { data: TMappedCharacter };
+type TCardCharacterProps = {
+  data: TMappedCharacter;
+  onFavoriteToggle: (character: TMappedCharacter) => void;
+};
 
 const CardCharacter = (props: TCardCharacterProps) => {
-  const { data } = props;
-
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { data, onFavoriteToggle } = props;
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const favoriteStatus = localStorage.getItem(`favorite-${data.id}`);
-    if (favoriteStatus === "true") {
-      setIsFavorited(true);
-    }
+    const storedData = localStorage.getItem(`favorite-${data.id}`);
+    setIsFavorite(!!storedData);
+
+    const handleFavoritesChanged = (event: CustomEvent<TMappedCharacter>) => {
+      if (event.detail && event.detail.id === data.id) {
+        setIsFavorite(false);
+      }
+    };
+
+    window.addEventListener(
+      "favoritesChanged",
+      handleFavoritesChanged as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "favoritesChanged",
+        handleFavoritesChanged as EventListener
+      );
+    };
   }, [data.id]);
 
   const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    const newFavoriteStatus = !isFavorited;
-    setIsFavorited(newFavoriteStatus);
-    localStorage.setItem(`favorite-${data.id}`, newFavoriteStatus.toString());
+
+    const newFavoriteStatus = !isFavorite;
+    setIsFavorite(newFavoriteStatus);
+
+    if (newFavoriteStatus) {
+      localStorage.setItem(`favorite-${data.id}`, JSON.stringify(data));
+    } else {
+      localStorage.removeItem(`favorite-${data.id}`);
+    }
+
+    window.dispatchEvent(new CustomEvent("favoritesChanged"));
+    onFavoriteToggle(data);
   };
 
   return (
@@ -64,8 +92,8 @@ const CardCharacter = (props: TCardCharacterProps) => {
                 {data.homeworldName}
               </span>
             </div>
-            <button onClick={toggleFavorite} className="ml-2">
-              {isFavorited ? (
+            <button onClick={toggleFavorite} className="ml-2 z-10">
+              {isFavorite ? (
                 <StarIcon className="h-4 sm:h-5 text-yellow-400" />
               ) : (
                 <StarOffIcon className="h-4 sm:h-5 text-gray-400" />

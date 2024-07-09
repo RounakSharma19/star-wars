@@ -11,6 +11,8 @@ export default async function Page() {
   const listAllCharactersRes = await getAllCharactersPages();
   const listAllCharacters = listAllCharactersRes.flatMap((c) => c.results);
 
+  console.log("listAllCharacters", listAllCharacters);
+
   const listAllPlanets = await getAllPlanets();
   const listAllSpecies = await getAllSpecies();
 

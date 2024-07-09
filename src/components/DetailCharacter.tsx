@@ -1,6 +1,5 @@
 import { getCharacterById, getPlanetByUrl } from "@/services/swapi-services";
 import React from "react";
-import NextImage from "./NextImage";
 
 type TDetailCharacterProps = { id: string };
 
@@ -33,8 +32,7 @@ const DetailCharacter = async ({ id }: TDetailCharacterProps) => {
       <div className="bg-amber-300 px-2 py-1">
         <h2 className="text-2xl font-[600]">{data.name}</h2>
       </div>
-
-      <div className="flex flex-col min-w-[360px] p-2">
+      <div className="flex flex-col min-w-[360px] p-2 bg-slate-800">
         <InfoSection title="Personal Data" data={personalData} />
         <InfoSection title="HomeWorld" data={homeworldInfo} />
       </div>
